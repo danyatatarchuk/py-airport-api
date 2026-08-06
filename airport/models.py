@@ -7,3 +7,10 @@ class Airport(models.Model):
 
     def __str__(self):
         return f"{self.name} ({self.closest_big_city})"
+
+
+class AirplaneType(models.Model):
+    name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.name
