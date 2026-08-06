@@ -34,3 +34,15 @@ class RouteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Route
         fields = "__all__"
+
+
+class CrewSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Crew
+        fields = "__all__"
+
+
+class OrderSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Order
+        fields = "__all__"
