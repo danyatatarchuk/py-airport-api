@@ -25,3 +25,20 @@ class Airplane(models.Model):
         on_delete=models.CASCADE,
         related_name="airplanes",
     )
+
+
+class Route(models.Model):
+    source = models.ForeignKey(
+        Airport,
+        on_delete=models.CASCADE,
+        related_name="departures",
+    )
+    destination = models.ForeignKey(
+        Airport,
+        on_delete=models.CASCADE,
+        related_name="arrivals",
+    )
+    distance = models.IntegerField()
+
+    def __str__(self):
+        return f"{self.source} -> {self.destination}"
