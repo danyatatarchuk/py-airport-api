@@ -42,6 +42,12 @@ class CrewSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
+class FlightSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Flight
+        fields = "__all__"
+
+
 class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
