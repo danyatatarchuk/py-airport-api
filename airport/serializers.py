@@ -117,3 +117,34 @@ class TicketSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ticket
         fields = "__all__"
+
+    def validate(self, attrs):
+        flight = attrs.get(
+            "flight",
+            getattr(self.instance, "flight", None),
+        )
+        row = attrs.get(
+            "row",
+            getattr(self.instance, "row", None),
+        )
+        seat = attrs.get(
+            "seat",
+            getattr(self.instance, "seat", None),
+        )
+
+        if flight and row is not None and seat is not None:
+            tickets = Ticket.objects.filter(
+                flight=flight,
+                row=row,
+                seat=seat,
+            )
+
+            if self.instance:
+                tickets = tickets.exclude(pk=self.instance.pk)
+
+            if tickets.exists():
+                raise serializers.ValidationError(
+                    "This seat is already booked for this flight."
+                )
+
+        return attrs
