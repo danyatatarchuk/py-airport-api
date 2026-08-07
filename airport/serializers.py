@@ -43,9 +43,68 @@ class CrewSerializer(serializers.ModelSerializer):
 
 
 class FlightSerializer(serializers.ModelSerializer):
+    route_info = serializers.SerializerMethodField()
+    airplane_info = serializers.SerializerMethodField()
+    crew_info = serializers.SerializerMethodField()
+
     class Meta:
         model = Flight
-        fields = "__all__"
+        fields = [
+            "id",
+            "route",
+            "route_info",
+            "airplane",
+            "airplane_info",
+            "crew",
+            "crew_info",
+            "departure_time",
+            "arrival_time",
+        ]
+
+    def get_route_info(self, obj):
+        return {
+            "id": obj.route.id,
+            "source": obj.route.source.name,
+            "destination": obj.route.destination.name,
+            "distance": obj.route.distance,
+        }
+
+    def get_airplane_info(self, obj):
+        return {
+            "id": obj.airplane.id,
+            "name": obj.airplane.name,
+            "rows": obj.airplane.rows,
+            "seats_in_row": obj.airplane.seats_in_row,
+            "airplane_type": obj.airplane.airplane_type.name,
+        }
+
+    def get_crew_info(self, obj):
+        return [
+            {
+                "id": crew.id,
+                "first_name": crew.first_name,
+                "last_name": crew.last_name,
+            }
+            for crew in obj.crew.all()
+        ]
+
+    def validate(self, attrs):
+        departure_time = attrs.get(
+            "departure_time",
+            getattr(self.instance, "departure_time", None),
+        )
+        arrival_time = attrs.get(
+            "arrival_time",
+            getattr(self.instance, "arrival_time", None),
+        )
+
+        if departure_time and arrival_time:
+            if arrival_time <= departure_time:
+                raise serializers.ValidationError(
+                    "Arrival time must be later than departure time."
+                )
+
+        return attrs
 
 
 class OrderSerializer(serializers.ModelSerializer):
