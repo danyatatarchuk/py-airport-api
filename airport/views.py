@@ -1,4 +1,5 @@
-from rest_framework import viewsets
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import filters, viewsets
 
 from airport.models import (
     Airport,
@@ -25,6 +26,9 @@ from airport.serializers import (
 class AirportViewSet(viewsets.ModelViewSet):
     queryset = Airport.objects.all()
     serializer_class = AirportSerializer
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+    filterset_fields = ["name", "closest_big_city"]
+    search_fields = ["name", "closest_big_city"]
 
 
 class AirplaneTypeViewSet(viewsets.ModelViewSet):
