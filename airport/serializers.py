@@ -35,6 +35,23 @@ class RouteSerializer(serializers.ModelSerializer):
         model = Route
         fields = "__all__"
 
+    def validate(self, attrs):
+        source = attrs.get(
+            "source",
+            getattr(self.instance, "source", None),
+        )
+        destination = attrs.get(
+            "destination",
+            getattr(self.instance, "destination", None),
+        )
+
+        if source and destination and source == destination:
+            raise serializers.ValidationError(
+                "Source and destination airports cannot be the same."
+            )
+
+        return attrs
+
 
 class CrewSerializer(serializers.ModelSerializer):
     class Meta:
