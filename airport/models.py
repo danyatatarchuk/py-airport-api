@@ -109,3 +109,11 @@ class Ticket(models.Model):
             f"Flight {self.flight.id}: "
             f"row {self.row}, seat {self.seat}"
         )
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["flight", "row", "seat"],
+                name="unique_flight_row_seat",
+            ),
+        ]
