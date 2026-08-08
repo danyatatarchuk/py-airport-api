@@ -63,7 +63,13 @@ class OrderViewSet(viewsets.ModelViewSet):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
 
+    def get_queryset(self):
+        return Order.objects.filter(user=self.request.user)
+
 
 class TicketViewSet(viewsets.ModelViewSet):
     queryset = Ticket.objects.all()
     serializer_class = TicketSerializer
+
+    def get_queryset(self):
+        return Ticket.objects.filter(order__user=self.request.user)
