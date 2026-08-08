@@ -133,6 +133,16 @@ class TicketSerializer(serializers.ModelSerializer):
         )
 
         if flight and row is not None and seat is not None:
+            if row < 1 or row > flight.airplane.rows:
+                raise serializers.ValidationError(
+                    f"Row must be between 1 and {flight.airplane.rows}."
+                )
+
+            if seat < 1 or seat > flight.airplane.seats_in_row:
+                raise serializers.ValidationError(
+                    f"Seat must be between 1 and {flight.airplane.seats_in_row}."
+                )
+
             tickets = Ticket.objects.filter(
                 flight=flight,
                 row=row,
